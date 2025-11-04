@@ -23,3 +23,4 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 update-server.sh
+update-migrate.sh
