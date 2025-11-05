@@ -19,12 +19,12 @@ return new class extends Migration
             $table->time('jam');
             $table->text('alamat');
             $table->enum('tipe', ['Perorangan', 'Instansi'])->default('Perorangan');
-            $table->integer('price')->default(600000);
-            $table->string('status')->default('pending');
-            $table->string('order_id')->nullable();
+            $table->enum('payment_method', ['Cash', 'Transfer'])->default('Cash');
+            $table->string('bukti_transfer')->nullable();
+            // Status booking
+            $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -35,4 +35,3 @@ return new class extends Migration
         Schema::dropIfExists('bookings');
     }
 };
-

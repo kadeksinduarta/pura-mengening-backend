@@ -4,22 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\PaymentController;
-// app/Http/Controllers/BlogController.php
 use App\Http\Controllers\BlogController;
 
 // 🔹 Endpoint untuk form booking dari React
 Route::post('/booking', [BookingController::class, 'store']);
 
-// 🔹 Endpoint untuk membuat transaksi Midtrans
-Route::post('/booking/payment', [PaymentController::class, 'createTransaction']);
-
 // 🔹 Endpoint untuk mengambil data blog
 Route::get('/blog', [BlogController::class, 'index']);
 Route::get('/blog/{id}', [BlogController::class, 'show']);
-
-// 🔹 Callback (notifikasi otomatis dari Midtrans)
-Route::post('/midtrans/callback', [PaymentController::class, 'callback']);
 
 // 🔒 Endpoint yang dilindungi (hanya untuk admin login)
 Route::middleware('auth:sanctum')->group(function () {
@@ -41,3 +33,6 @@ Route::middleware('auth:sanctum')->group(function () {
 // 👨‍💼 Admin Authentication
 Route::post('/admin/register', [AdminController::class, 'register']);
 Route::post('/admin/login', [AdminController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/admin/me', function (Request $request) {
+    return response()->json($request->user());
+});
