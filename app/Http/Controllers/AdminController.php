@@ -12,18 +12,21 @@ class AdminController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:admins',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:admins,email',
             'password' => 'required|min:6',
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
-        $admin = Admin::create($validated);
+        $admin = \App\Models\Admin::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+        ]);
 
         return response()->json([
-            'message' => 'Admin berhasil dibuat',
-            'data' => $admin,
-        ]);
+            'message' => 'Registrasi berhasil',
+            'admin' => $admin,
+        ], 201);
     }
 
     public function login(Request $request)
