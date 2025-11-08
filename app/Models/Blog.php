@@ -9,12 +9,21 @@ class Blog extends Model
     //
     use HasFactory;
 
+    // protected $fillable = [
+    //     'title',
+    //     'content',
+    //     'author',
+    //     'published_date',
+    //     'image_url',
+    //     'slug',
+    // ];
     protected $fillable = [
-        'title',
-        'content',
-        'author',
-        'published_date',
-        'image_url',
-        'slug',
-    ];
+    'title',
+    'content',
+    'author',
+    'published_date',
+    'slug',
+    'image_url', // <--- jangan lupa
+];
+
 }

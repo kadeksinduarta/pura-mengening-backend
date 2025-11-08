@@ -24,30 +24,33 @@ class BookingController extends Controller
      * Simpan data booking baru
      */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:100',
-        'email' => 'required|email',
-        'tanggal' => 'required|date',
-        'jam' => 'required',
-        'alamat' => 'required|string',
-        'tipe' => 'required|in:Perorangan,Instansi',
-        'payment_method' => 'required|in:Cash,Transfer',
-        'bukti_transfer' => 'sometimes|required_if:payment_method,Transfer|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+    {
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'phone' => 'nullable|string',
+            'tanggal' => 'required|date',
+            'jam' => 'nullable',
+            'alamat' => 'required|string',
+            'tipe' => 'required|string',
+            'payment_method' => 'required|string',
+            'catatan' => 'nullable|string',
+            'bukti_transfer' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-     if ($request->hasFile('bukti_transfer')) {
-        $path = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
-        $validated['bukti_transfer'] = $path;
+        // ✅ SIMPAN FILE & PATH
+        if ($request->hasFile('bukti_transfer')) {
+            $path = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
+            $validated['bukti_transfer'] = $path; // <--- WAJIB ADA INI
+        }
+
+        // ✅ SIMPAN DATA KE DB
+        Booking::create($validated);
+
+        return response()->json([
+            'message' => 'Booking berhasil'
+        ], 201);
     }
-
-    $booking = \App\Models\Booking::create($validated);
-
-    return response()->json([
-        'message' => 'Booking berhasil dibuat',
-        'data' => $booking,
-    ]);
-}
 
     /**
      * Menampilkan detail booking berdasarkan ID
