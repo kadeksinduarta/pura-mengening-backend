@@ -83,24 +83,27 @@ class BookingController extends Controller
         }
 
         $validated = $request->validate([
-            'name'      => 'sometimes|string|max:255',
-            'email'     => 'sometimes|email',
-            'tanggal'   => 'sometimes|date',
-            'jam'       => 'sometimes|string',
-            'alamat'    => 'sometimes|string',
-            'tipe'      => 'sometimes|in:Perorangan,Instansi',
-            'price'     => 'sometimes|integer',
-            'status'    => 'sometimes|string',
-            'order_id'  => 'sometimes|string|nullable',
+            'name'           => 'sometimes|string|max:255',
+            'email'          => 'sometimes|email',
+            'tanggal'        => 'sometimes|date',
+            'jam'            => 'sometimes|string',
+            'alamat'         => 'sometimes|string',
+            'tipe'           => 'sometimes|in:Perorangan,Instansi',
+            'payment_method' => 'sometimes|in:Cash,Transfer',
+            'bukti_transfer' => 'sometimes|string|nullable',
+            'status'         => 'sometimes|in:pending,confirmed,cancelled',
+            'order_id'       => 'sometimes|string|nullable',
+            'price'          => 'sometimes|integer|min:0',
         ]);
 
         $booking->update($validated);
 
         return response()->json([
             'message' => 'Data booking berhasil diperbarui',
-            'data' => $booking
+            'data'    => $booking
         ], 200);
     }
+
 
     /**
      * Hapus data booking
