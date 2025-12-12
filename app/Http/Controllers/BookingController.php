@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingPaidMail;
+use App\Mail\NewBookingAdminMail;
 
 class BookingController extends Controller
 {
@@ -45,7 +48,22 @@ class BookingController extends Controller
         }
 
         // ✅ SIMPAN DATA KE DB
-        Booking::create($validated);
+        $booking = Booking::create($validated);
+
+        // 📧 KIRIM EMAIL KE USER (Nota & Bukti)
+        try {
+            Mail::to($booking->email)->send(new BookingPaidMail($booking));
+        } catch (\Exception $e) {
+            // Log error jika email gagal, tapi jangan hentikan proses
+            \Illuminate\Support\Facades\Log::error('Gagal kirim email ke user: ' . $e->getMessage());
+        }
+
+        // 📧 KIRIM EMAIL KE ADMIN (Notifikasi)
+        try {
+            Mail::to('ikadeksinduarta@gmail.com')->send(new NewBookingAdminMail($booking));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal kirim email ke admin: ' . $e->getMessage());
+        }
 
         return response()->json([
             'message' => 'Booking berhasil'
